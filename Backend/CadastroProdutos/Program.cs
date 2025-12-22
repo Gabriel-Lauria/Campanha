@@ -1,6 +1,5 @@
 using System.Text;
 using CadastroProdutos.Database;
-using CadastroProdutos.Models;
 using CadastroProdutos.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -8,50 +7,30 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuração do JWT
+// JWT
 var jwtConfig = builder.Configuration.GetSection("Jwt");
 var key = Encoding.ASCII.GetBytes(jwtConfig["Key"]!);
 
-// Add services
+// Services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(x =>
-{
-    x.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme()
-    {
-        Description = @"Insira o JWT no campo abaixo usando o formato: Bearer {seu_token}.",
-        Name = "Authorization",
-        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
-    });
+builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlite("Data Source=Usuarios.db"));
 
-    x.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement()
+// Registrar UsuarioService
+builder.Services.AddScoped<UsuarioService>();
+
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ReactApp", policy =>
     {
-        {
-            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-            {
-                Reference = new Microsoft.OpenApi.Models.OpenApiReference
-                {
-                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                },
-                Scheme = "oauth2",
-                Name = "Bearer",
-                In = Microsoft.OpenApi.Models.ParameterLocation.Header
-            },
-            new List<string>()
-        }
+        policy.WithOrigins("http://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
     });
 });
-
-// Database
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite("Data Source=Produtos.db"));
-
-// Serviços
-builder.Services.AddScoped<IProdutosService, ProdutosDatabaseService>();
-builder.Services.AddScoped<UsuarioService>();
 
 // Autenticação JWT
 builder.Services.AddAuthentication(options =>
@@ -73,9 +52,29 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build();
 
-// Criar usuários iniciais se não existirem
-using (var scope = app.Services.CreateScope())
+// Middleware CORS deve vir antes de qualquer endpoint
+app.UseCors("ReactApp");
+
+await CriarUsuariosIniciais(app.Services);
+
+if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
+
+// Criar usuários iniciais
+static async Task CriarUsuariosIniciais(IServiceProvider services)
+{
+    using var scope = services.CreateScope();
     var usuarioService = scope.ServiceProvider.GetRequiredService<UsuarioService>();
 
     if (await usuarioService.ObterPorUsuarioAsync("admin") == null)
@@ -84,19 +83,3 @@ using (var scope = app.Services.CreateScope())
     if (await usuarioService.ObterPorUsuarioAsync("cliente") == null)
         await usuarioService.CriarUsuarioAsync("cliente", "1234", "cliente");
 }
-
-// Configure middleware
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
-
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();

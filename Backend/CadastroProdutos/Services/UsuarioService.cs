@@ -15,9 +15,19 @@ namespace CadastroProdutos.Services
             _db = db;
         }
 
+        public async Task<List<Usuario>> ObterTodosAsync()
+        {
+            return await _db.Usuarios.ToListAsync();
+        }
+
         public async Task<Usuario?> ObterPorUsuarioAsync(string usuarioNome)
         {
             return await _db.Usuarios.FirstOrDefaultAsync(u => u.UsuarioNome == usuarioNome);
+        }
+
+        public async Task<Usuario?> ObterPorIdAsync(int id)
+        {
+            return await _db.Usuarios.FindAsync(id);
         }
 
         public async Task<Usuario> CriarUsuarioAsync(string usuarioNome, string senha, string role = "cliente")
@@ -32,6 +42,33 @@ namespace CadastroProdutos.Services
             _db.Usuarios.Add(usuario);
             await _db.SaveChangesAsync();
             return usuario;
+        }
+
+        public async Task<Usuario?> AtualizarUsuarioAsync(int id, Usuario usuarioAtualizado, string? novaSenha = null)
+        {
+            var usuario = await _db.Usuarios.FindAsync(id);
+            if (usuario == null) return null;
+
+            usuario.Role = usuarioAtualizado.Role;
+            usuario.UsuarioNome = usuarioAtualizado.UsuarioNome;
+
+            if (!string.IsNullOrEmpty(novaSenha))
+            {
+                usuario.SenhaHash = _hasher.HashPassword(usuario, novaSenha);
+            }
+
+            await _db.SaveChangesAsync();
+            return usuario;
+        }
+
+        public async Task<bool> RemoverUsuarioAsync(int id)
+        {
+            var usuario = await _db.Usuarios.FindAsync(id);
+            if (usuario == null) return false;
+
+            _db.Usuarios.Remove(usuario);
+            await _db.SaveChangesAsync();
+            return true;
         }
 
         public bool ValidarSenha(Usuario usuario, string senha)

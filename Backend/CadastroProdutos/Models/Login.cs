@@ -1,13 +1,8 @@
-using System;
-using System.ComponentModel.DataAnnotations;
-
-namespace CadastroProdutos.Models;
-
-public class Login
+namespace CadastroProdutos.Models
 {
-    [Required]
-    public string Usuario { get; set; }
-
-    [Required]
-    public string Senha { get; set; }
+    public class Login
+    {
+        public string Usuario { get; set; } = null!;
+        public string Senha { get; set; } = null!;
+    }
 }

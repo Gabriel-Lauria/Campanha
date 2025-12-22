@@ -22,16 +22,17 @@ namespace CadastroProdutos.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Login(Login login)
+        public async Task<ActionResult> Login([FromBody] Login login)
         {
-            // Buscar usuário no banco
+            if (login == null || string.IsNullOrEmpty(login.Usuario) || string.IsNullOrEmpty(login.Senha))
+                return BadRequest("Usuário e senha são obrigatórios");
+
             var usuario = await _usuarioService.ObterPorUsuarioAsync(login.Usuario);
             if (usuario == null || !_usuarioService.ValidarSenha(usuario, login.Senha))
             {
-                return Unauthorized();
+                return Unauthorized(new { message = "Usuário ou senha incorretos" });
             }
 
-            // Criar o token JWT
             var jwtConfig = _configuration.GetSection("Jwt");
             var key = Encoding.ASCII.GetBytes(jwtConfig["Key"]!);
 
@@ -55,7 +56,7 @@ namespace CadastroProdutos.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
 
-            return Ok(new { Token = tokenString });
+            return Ok(new { token = tokenString });
         }
     }
 }

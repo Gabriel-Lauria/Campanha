@@ -10,7 +10,6 @@ namespace CadastroProdutos.Database
         {
         }
 
-        public DbSet<Produto> Produtos { get; set; } = null!; // sua tabela de produtos
-        public DbSet<Usuario> Usuarios { get; set; } = null!; // nova tabela de usuários
+        public DbSet<Usuario> Usuarios { get; set; } = null!;
     }
 }

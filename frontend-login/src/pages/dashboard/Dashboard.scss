@@ -1,0 +1,148 @@
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--background-light);
+  color: #111;
+}
+
+.dashboard-main {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.dashboard-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Sidebar */
+.dashboard-sidebar {
+  width: 16rem;
+  background-color: #111722;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.sidebar-title {
+  color: white;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.sidebar-subtitle {
+  color: #92a4c9;
+  font-size: 0.875rem;
+}
+
+.sidebar-nav .nav-item {
+  display: block;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 0.25rem;
+  text-decoration: none;
+}
+
+.sidebar-nav .nav-item:hover,
+.sidebar-nav .nav-item.active {
+  background-color: #232f48;
+}
+
+.sidebar-bottom .create-campaign-btn {
+  width: 100%;
+  margin-bottom: 0.5rem;
+  background-color: #135bec;
+  color: white;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+/* Header */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.header-left h1 {
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.header-left p {
+  color: #6c757d;
+}
+
+.header-right .filter-btn,
+.header-right .create-campaign-btn {
+  margin-left: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+}
+
+.header-right .filter-btn {
+  background-color: #fff;
+  color: #111;
+}
+
+.header-right .create-campaign-btn {
+  background-color: #135bec;
+  color: white;
+}
+
+/* Stats Card */
+.stats-card {
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+}
+
+.stats-change.green {
+  color: #28a745;
+}
+
+.stats-change.red {
+  color: #dc3545;
+}
+
+/* Table */
+.campaign-table {
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 2rem;
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.table-header input {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}

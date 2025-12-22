@@ -328,3 +328,4 @@ C:\Users\Gabriel Lauria\Downloads\backend\Backend\CadastroProdutos\obj\Debug\net
 C:\Users\Gabriel Lauria\Downloads\backend\Backend\CadastroProdutos\obj\Debug\net9.0\CadastroProdutos.pdb
 C:\Users\Gabriel Lauria\Downloads\backend\Backend\CadastroProdutos\obj\Debug\net9.0\CadastroProdutos.genruntimeconfig.cache
 C:\Users\Gabriel Lauria\Downloads\backend\Backend\CadastroProdutos\obj\Debug\net9.0\ref\CadastroProdutos.dll
+C:\Users\Gabriel Lauria\Downloads\backend\Backend\CadastroProdutos\obj\Debug\net9.0\CadastroProdutos.sourcelink.json
