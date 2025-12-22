@@ -1,10 +1,10 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using CadastroProdutos.Models;
+using CadastroProdutos.Services;
 
 namespace CadastroProdutos.Controllers
 {
@@ -12,43 +12,36 @@ namespace CadastroProdutos.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private IConfiguration configuration;
+        private readonly IConfiguration _configuration;
+        private readonly UsuarioService _usuarioService;
 
-        public LoginController(IConfiguration configuration)
+        public LoginController(IConfiguration configuration, UsuarioService usuarioService)
         {
-            this.configuration = configuration;
+            _configuration = configuration;
+            _usuarioService = usuarioService;
         }
 
         [HttpPost]
-        public ActionResult Login(Login login)
+        public async Task<ActionResult> Login(Login login)
         {
-            string role;
-
-            // Validar os usuários
-            if (login.Usuario == "admin" && login.Senha == "1234")
-            {
-                role = "admin";
-            }
-            else if (login.Usuario == "cliente" && login.Senha == "1234")
-            {
-                role = "cliente";
-            }
-            else
+            // Buscar usuário no banco
+            var usuario = await _usuarioService.ObterPorUsuarioAsync(login.Usuario);
+            if (usuario == null || !_usuarioService.ValidarSenha(usuario, login.Senha))
             {
                 return Unauthorized();
             }
 
             // Criar o token JWT
-            var jwtConfig = configuration.GetSection("Jwt");
-            var key = Encoding.ASCII.GetBytes(jwtConfig["Key"]);
+            var jwtConfig = _configuration.GetSection("Jwt");
+            var key = Encoding.ASCII.GetBytes(jwtConfig["Key"]!);
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var tokenDescriptor = new SecurityTokenDescriptor()
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim("usuario", login.Usuario),
-                    new Claim(ClaimTypes.Role, role)
+                    new Claim("usuario", usuario.UsuarioNome),
+                    new Claim(ClaimTypes.Role, usuario.Role)
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
                 Issuer = jwtConfig["Issuer"],
