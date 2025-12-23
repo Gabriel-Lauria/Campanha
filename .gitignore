@@ -1,0 +1,24 @@
+# ===== .NET =====
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.db
+*.cache
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# ===== Frontend =====
+node_modules/
+dist/
+build/
+
+# ===== ZIP / TEMP =====
+*.zip
+
+# ===== ENV =====
+.env
