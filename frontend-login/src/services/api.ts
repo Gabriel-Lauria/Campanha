@@ -1,16 +1,9 @@
-const API_URL = "http://localhost:5039/api"; // URL do seu backend
+// src/services/api.ts
+import axios from "axios";
 
-export async function login(usuario: string, senha: string) {
-  const response = await fetch(`${API_URL}/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ usuario, senha }),
-  });
+const API_URL = "http://localhost:5039/api";
 
-  if (!response.ok) {
-    throw new Error("Usuário ou senha incorretos");
-  }
-
-  const data = await response.json();
-  return data.token; // JWT
-}
+export const login = async (usuario: string, senha: string) => {
+  const response = await axios.post(`${API_URL}/Login`, { usuario, senha });
+  return response.data; // deve conter {id, usuarioNome, role, token}
+};

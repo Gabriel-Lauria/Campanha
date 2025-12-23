@@ -1,7 +1,7 @@
 import axios from "axios";
 import { User } from "../pages/users/types";
 
-const API_URL = "http://localhost:5039/api/usuarios";
+const API_URL = "http://localhost:7122/api/usuarios";
 
 export const getUsers = async (): Promise<User[]> => {
   const response = await axios.get<User[]>(API_URL);

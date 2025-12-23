@@ -8,11 +8,11 @@ interface Props {
 
 const AppLayout: React.FC<Props> = ({ onLogout }) => {
   return (
-    <div className="app-layout">
+    <div className="layout">
       <Sidebar onLogout={onLogout} />
-      <main className="app-content">
+      <div className="content">
         <Outlet />
-      </main>
+      </div>
     </div>
   );
 };
