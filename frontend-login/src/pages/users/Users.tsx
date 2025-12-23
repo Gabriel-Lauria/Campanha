@@ -1,49 +1,81 @@
-import React, { useState, useEffect } from "react";
-import { User, getUsers, createUser, updateUser, deleteUser } from "../../services/userService";
-import UserTable from "./UserTable";
+import React, { useEffect, useState } from "react";
+import { User } from "./types";
+import { getUsers, deleteUser } from "../../services/userService";
 import UserModal from "./UserModal";
+import { useAuth } from "../../context/AuthContext";
 import "./Users.scss";
 
 const Users: React.FC = () => {
+  const { isAdmin } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
-  const [modalOpen, setModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
-  const fetchUsers = async () => {
-    const data = await getUsers();
-    setUsers(data);
+  const loadUsers = async () => {
+    setUsers(await getUsers());
   };
 
   useEffect(() => {
-    fetchUsers();
+    loadUsers();
   }, []);
-
-  const handleSave = async (user: User) => {
-    if (user.id) {
-      await updateUser(user);
-    } else {
-      await createUser(user);
-    }
-    setModalOpen(false);
-    fetchUsers();
-  };
-
-  const handleEdit = (user: User) => {
-    setEditingUser(user);
-    setModalOpen(true);
-  };
-
-  const handleDelete = async (id: number) => {
-    await deleteUser(id);
-    fetchUsers();
-  };
 
   return (
     <div className="users-page">
-      <h1>Gerenciar Usuários</h1>
-      <button onClick={() => { setEditingUser(null); setModalOpen(true); }}>+ Novo Usuário</button>
-      <UserTable users={users} onEdit={handleEdit} onDelete={handleDelete} />
-      {modalOpen && <UserModal user={editingUser} onSave={handleSave} onClose={() => setModalOpen(false)} />}
+      <h2>Usuários</h2>
+
+      {isAdmin && (
+        <button
+          className="primary-btn"
+          onClick={() => {
+            setEditingUser(null);
+            setShowModal(true);
+          }}
+        >
+          Novo Usuário
+        </button>
+      )}
+
+      <table className="users-table">
+        <thead>
+          <tr>
+            <th>Usuário</th>
+            <th>Role</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map(u => (
+            <tr key={u.id}>
+              <td>{u.usuarioNome}</td>
+              <td>{u.role}</td>
+              <td>
+                <button onClick={() => {
+                  setEditingUser(u);
+                  setShowModal(true);
+                }}>
+                  Editar
+                </button>
+
+                {isAdmin && (
+                  <button onClick={() => deleteUser(u.id).then(loadUsers)}>
+                    Excluir
+                  </button>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {showModal && (
+        <UserModal
+          user={editingUser}
+          onClose={() => {
+            setShowModal(false);
+            loadUsers();
+          }}
+        />
+      )}
     </div>
   );
 };

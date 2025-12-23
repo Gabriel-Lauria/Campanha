@@ -1,64 +1,85 @@
 .users-page {
-  padding: 20px;
+  padding: 30px;
+  color: #fff;
+}
 
-  h1 {
-    font-size: 24px;
-    margin-bottom: 15px;
+.users-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+
+  h2 {
+    color: black;
+    font-size: 22px;
   }
 
-  button {
-    margin-bottom: 15px;
-    padding: 8px 12px;
-    background-color: #135bec;
-    color: white;
+  .primary {
+    background: #135bec;
     border: none;
-    border-radius: 6px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: 600;
     cursor: pointer;
+  }
+
+  .primary:hover {
+    background: #0f49c2;
   }
 }
 
-.user-table {
+.users-table {
   width: 100%;
   border-collapse: collapse;
+  background: #001b4d;
+  border-radius: 12px;
+  overflow: hidden;
 
-  th, td {
-    border: 1px solid #ccc;
-    padding: 8px 12px;
+  th,
+  td {
+    padding: 14px 16px;
     text-align: left;
   }
 
   th {
-    background-color: #f6f6f8;
+    background: #1c2333;
+    color: #ffffff;
+    font-weight: 600;
   }
 
-  tr:nth-child(even) {
-    background-color: #f9f9f9;
+  tr {
+    border-bottom: 1px solid #1c2333;
+    color: white;
   }
-}
 
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+  tr:last-child {
+    border-bottom: none;
+  }
 
-.modal {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  min-width: 300px;
+  td {
+    color: #fff;
+  }
 
-  input {
-    display: block;
-    width: 100%;
-    margin-bottom: 10px;
-    padding: 6px;
+  .actions {
+    display: flex;
+    gap: 10px;
   }
 
   button {
-    margin-right: 10px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  button:hover {
+    opacity: 0.85;
+  }
+
+  .danger {
+    background: #e54848;
+    color: #fff;
   }
 }
